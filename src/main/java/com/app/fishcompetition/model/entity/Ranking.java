@@ -18,13 +18,16 @@ import java.util.UUID;
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope = Ranking.class)
 public class Ranking {
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    private UUID id;
+    //@Id
+    //@GeneratedValue(generator = "uuid2")
+    //private UUID id;
 
-    private int rank;
+    @EmbeddedId
+    private RankingKey id;
 
-    private int score;
+    @Column(name = "ranking_rank")
+    private Integer rank;
+    private Integer score;
 
     @ManyToOne
     @JoinColumn(name="member_id")
