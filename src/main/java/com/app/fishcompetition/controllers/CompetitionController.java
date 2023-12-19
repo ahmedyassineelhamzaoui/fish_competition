@@ -6,6 +6,7 @@ import com.app.fishcompetition.common.responses.RequestResponseWithoutDetails;
 import com.app.fishcompetition.mapper.CompetitionDtoConverter;
 import com.app.fishcompetition.model.dto.CompetitionDto;
 import com.app.fishcompetition.model.entity.Competition;
+import com.app.fishcompetition.model.entity.Hunting;
 import com.app.fishcompetition.services.CompetitionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -59,19 +61,20 @@ public class CompetitionController {
     @GetMapping("/competitions")
     public ResponseEntity<RequestResponseWithDetails> getAllCompetitions()  {
 
-        Map<String,Object> response = new HashMap<>();
         List<Competition> competitions = competitionService.getAllCompetitions();
-        List<CompetitionDto> competitionDtoList  = new ArrayList<>();
-        for(Competition competition: competitions){
-            competitionDtoList.add(competitionDtoConverter.convertCompetitionTODto(competition));
-        }
+        Map<String,Object> response = new HashMap<>();
+        List<CompetitionDto> competitionData = competitions.stream()
+                .map(competitionDtoConverter::convertCompetitionTODto)
+                .collect(Collectors.toList());
+        response.put("Competitions", competitionData);
+
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setMessage("competitions retrieved successfully");
         requestResponseWithDetails.setStatus("200");
-        response.put("Competitions",competitionDtoList);
         requestResponseWithDetails.setDetails(response);
         return ResponseEntity.ok().body(requestResponseWithDetails);
     }
+
     @GetMapping("/competition/{status}")
     public ResponseEntity<RequestResponseWithDetails> getCompetitionByStatus(@PathVariable String status)  {
         Map<String,Object> response = new HashMap<>();
