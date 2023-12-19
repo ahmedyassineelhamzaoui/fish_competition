@@ -127,6 +127,7 @@ public class HuntingServiceImpl implements HuntingService {
          }
       return score;
    }
+   @Override
    public List<Hunting> getAllHuntingOfMemberInCompetition(UUID memberId, UUID competitionId){
       return huntingRepository.getAllHuntingOfSameCompetitionAndSameMember(memberId,competitionId);
    }

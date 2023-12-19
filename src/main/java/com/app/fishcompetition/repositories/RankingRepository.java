@@ -17,4 +17,6 @@ public interface RankingRepository extends JpaRepository<Ranking, RankingKey> {
     Optional<Ranking> findByMemberIdAndCompetitionId(UUID memberId, UUID competitionId);;
 
     List<Ranking> findAllByCompetitionIdOrderByScoreDesc(UUID competitionId);
+
+    List<Ranking> findAllByCompetitionIdOrderByRankAsc(UUID competitionId);
 }

@@ -65,7 +65,7 @@ public class RankingServiceImpl  implements RankingService {
     }
     public List<Ranking> getRankingsByCompetitionId(UUID competitionId) {
         competitionService.getCompetitionById(competitionId).orElseThrow(() -> new NoSuchElementException("Competition not found"));
-        return rankingRepository.findAllByCompetitionIdOrderByScoreDesc(competitionId);
+        return rankingRepository.findAllByCompetitionIdOrderByRankAsc(competitionId);
     }
 
     @Override
