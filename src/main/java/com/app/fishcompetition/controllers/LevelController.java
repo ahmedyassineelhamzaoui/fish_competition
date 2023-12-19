@@ -41,13 +41,14 @@ public class LevelController {
     }
     @GetMapping("/levels")
     public ResponseEntity<RequestResponseWithDetails> getAllLevels() {
-       List<Level> levels  = levelService.getAllLevels();
-       List<LevelDto> levelsDto = new ArrayList<>();
-       for(Level level:levels){
-           levelsDto.add(levelDtoConverter.convertLevelTODto(level));
-       }
+
         Map<String,Object> response = new HashMap<>();
-        response.put("levels",levelsDto);
+        List<Level> levels = levelService.getAllLevels();
+        List<LevelDto> levelsData = levels.stream()
+                .map(levelDtoConverter::convertLevelTODto)
+                .collect(Collectors.toList());
+        response.put("levels",levelsData);
+        
         requestResponseWithDetails.setMessage("Levels retrieved successfully");
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setStatus("200");
@@ -65,10 +66,8 @@ public class LevelController {
         List<LevelDto> levelsData = levels.stream()
                 .map(levelDtoConverter::convertLevelTODto)
                 .collect(Collectors.toList());
-        response.put("fishes",levelsData);
+        response.put("levels",levelsData);
 
-
-        response.put("levels",levelService.getAllLevelsWithPagination(pageNumber,pageSize));
         requestResponseWithDetails.setMessage("Levels retrieved successfully");
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setStatus("200");
