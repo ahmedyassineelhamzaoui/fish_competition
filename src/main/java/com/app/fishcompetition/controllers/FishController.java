@@ -3,7 +3,9 @@ package com.app.fishcompetition.controllers;
 import com.app.fishcompetition.common.responses.RequestResponseWithDetails;
 import com.app.fishcompetition.common.responses.RequestResponseWithoutDetails;
 import com.app.fishcompetition.mapper.FishDtoConverter;
+import com.app.fishcompetition.model.dto.CompetitionDto;
 import com.app.fishcompetition.model.dto.FishDto;
+import com.app.fishcompetition.model.entity.Competition;
 import com.app.fishcompetition.model.entity.Fish;
 import com.app.fishcompetition.services.FishService;
 import jakarta.validation.Valid;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -42,11 +45,10 @@ public class FishController {
     public ResponseEntity<RequestResponseWithDetails> getAllFish() {
         Map<String,Object> response = new HashMap<>();
         List<Fish> fishes = fishService.getAllFish();
-        List<FishDto> fishesDto  = new ArrayList<>();
-        for(Fish fish: fishes){
-            fishesDto.add(fishDtoConverter.convertFishTODto(fish));
-        }
-        response.put("fishes",fishesDto);
+        List<FishDto> fishesData = fishes.stream()
+                .map(fishDtoConverter::convertFishTODto)
+                .collect(Collectors.toList());
+        response.put("fishes",fishesData);
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setMessage("Fish retrieved successfully");
         requestResponseWithDetails.setStatus("200");
