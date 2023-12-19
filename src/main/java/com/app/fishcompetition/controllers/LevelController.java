@@ -3,14 +3,13 @@ package com.app.fishcompetition.controllers;
 import com.app.fishcompetition.common.responses.RequestResponseWithDetails;
 import com.app.fishcompetition.common.responses.RequestResponseWithoutDetails;
 import com.app.fishcompetition.mapper.LevelDtoConverter;
-import com.app.fishcompetition.model.dto.FishDto;
 import com.app.fishcompetition.model.dto.LevelDto;
-import com.app.fishcompetition.model.entity.Fish;
 import com.app.fishcompetition.model.entity.Level;
 import com.app.fishcompetition.services.LevelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +47,7 @@ public class LevelController {
                 .map(levelDtoConverter::convertLevelTODto)
                 .collect(Collectors.toList());
         response.put("levels",levelsData);
-        
+
         requestResponseWithDetails.setMessage("Levels retrieved successfully");
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setStatus("200");
@@ -59,10 +58,8 @@ public class LevelController {
     @GetMapping("/levels/{pageNumber}/{pageSize}")
     public ResponseEntity<RequestResponseWithDetails> getAllLevelsWithPagination(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
 
-
         Map<String,Object> response = new HashMap<>();
-
-        List<Level> levels = levelService.getAllLevels();
+        Page<Level> levels = levelService.getAllLevelsWithPagination(pageNumber,pageSize);
         List<LevelDto> levelsData = levels.stream()
                 .map(levelDtoConverter::convertLevelTODto)
                 .collect(Collectors.toList());
