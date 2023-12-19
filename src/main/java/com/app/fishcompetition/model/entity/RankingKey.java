@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @Embeddable
@@ -14,6 +15,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RankingKey implements Serializable {
-    private Integer num;
-    private String code;
+    private UUID member_id;
+    private UUID competition_id;
 }
