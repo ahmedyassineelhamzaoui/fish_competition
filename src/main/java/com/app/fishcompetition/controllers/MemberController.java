@@ -3,7 +3,9 @@ package com.app.fishcompetition.controllers;
 import com.app.fishcompetition.common.responses.RequestResponseWithDetails;
 import com.app.fishcompetition.common.responses.RequestResponseWithoutDetails;
 import com.app.fishcompetition.mapper.MemberDtoConverter;
+import com.app.fishcompetition.model.dto.LevelDto;
 import com.app.fishcompetition.model.dto.MemberDto;
+import com.app.fishcompetition.model.entity.Level;
 import com.app.fishcompetition.model.entity.Member;
 import com.app.fishcompetition.services.MemberService;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api")
 @RestController
@@ -45,14 +48,14 @@ public class MemberController {
     public ResponseEntity<RequestResponseWithDetails> getAllMembers() {
         Map<String,Object> response = new HashMap<>();;
         List<Member> members = memberService.getAllMembers();
-        List<MemberDto> memberDtoList = new ArrayList<>();
-        for(Member member:members){
-            memberDtoList.add(memberDtoConverter.convertMemberTODto(member));
-        }
+        List<MemberDto> membersData = members.stream()
+                .map(memberDtoConverter::convertMemberTODto)
+                .collect(Collectors.toList());
+        response.put("members",membersData);
+
         requestResponseWithDetails.setMessage("Members retrieved successfully");
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setStatus("200");
-        response.put("members",memberDtoList);
         requestResponseWithDetails.setDetails(response);
         return ResponseEntity.ok().body(requestResponseWithDetails);
     }
