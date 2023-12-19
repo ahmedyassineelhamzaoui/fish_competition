@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,10 +63,13 @@ public class MemberController {
     @GetMapping("/members/{pageNumber}/{pageSize}")
     public ResponseEntity<RequestResponseWithDetails> getMemberById(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
         Map<String,Object> response = new HashMap<>();
+        Page<Member> members = memberService.getAllMembersWithPagination(pageNumber,pageSize);
+        List<MemberDto> membersData  = members.stream().
+                map(memberDtoConverter::convertMemberTODto).collect(Collectors.toList());
+        response.put("members",membersData);
         requestResponseWithDetails.setMessage("Member retrieved successfully");
         requestResponseWithDetails.setTimestamp(LocalDateTime.now());
         requestResponseWithDetails.setStatus("200");
-        response.put("members",memberService.getAllMembersWithPagination(pageNumber,pageSize));
         requestResponseWithDetails.setDetails(response);
         return ResponseEntity.ok().body(requestResponseWithDetails);
     }
