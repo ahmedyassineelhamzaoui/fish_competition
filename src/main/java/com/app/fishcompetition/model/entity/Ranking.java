@@ -18,9 +18,6 @@ import java.util.UUID;
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope = Ranking.class)
 public class Ranking {
-    //@Id
-    //@GeneratedValue(generator = "uuid2")
-    //private UUID id;
 
     @EmbeddedId
     private RankingKey id;
